@@ -1,4 +1,4 @@
-public class MethodCallStarkFrame{
+public class  {
 	public static void main(String[] args){
 		int x =50;
 		add(20,100);

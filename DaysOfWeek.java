@@ -8,4 +8,4 @@ public class DaysOfWeek {
         System.out.println("FRIDAY");
         System.out.println("SATURDAY");
     }
-}
+} 

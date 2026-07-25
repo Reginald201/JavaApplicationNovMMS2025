@@ -1,4 +1,5 @@
 public class Card2 {
+	
     private final String face;
     private final String suit;
 

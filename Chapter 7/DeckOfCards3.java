@@ -1,31 +1,25 @@
-
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DeckOfCards{
-	public static void main(String[] args) {
-        DeckOfCards myDeck = new DeckOfCards();
-        myDeck.shuffle();
-        System.out.println(myDeck);
-    }
-	
+public class DeckOfCards3{
     private final Card[] deck = new Card[52];
     private int currentCard = 0;
     private static final SecureRandom randomNumbers = new SecureRandom();
 
-    private final Face[] FACES = Face.values();
-private final Suit[] SUITS = Suit.values();
+    // Arrays initialized with the constants of the Face and Suit enums
+    private static final Face[] FACES = Face.values();
+    private static final Suit[] SUITS = Suit.values();
 
     // Constructor fills deck with Card objects
-    public DeckOfCards() {
+    public DeckOfCards3() {
         int count = 0;
         for (Suit suit : SUITS) {
             for (Face face : FACES) {
                 deck[count] = new Card(face, suit);
                 count++;
             }
-	    }
+        }
     }
 
     // Shuffles deck using the Fisher-Yates-style swap approach
@@ -57,26 +51,15 @@ private final Suit[] SUITS = Suit.values();
         return hand;
     }
 
-    // Returns a map of face -> count of occurrences in the hand
-    private Map<String, Integer> faceCounts(Card[] hand) {
-        Map<String, Integer> counts = new HashMap<>();
+    // Returns a map of Face -> count of occurrences in the hand
+    private Map<Face, Integer> faceCounts(Card[] hand) {
+        Map<Face, Integer> counts = new HashMap<>();
         for (Card card : hand) {
-            counts.merge(card.getFace().name(), 1, Integer::sum);
+            counts.merge(card.getFace(), 1, Integer::sum);
         }
         return counts;
     }
 
-    // Returns the numeric rank of a face (Ace low = 1 .. King = 13)
-    private int faceValue(String face) {
-        for (int i = 0; i < FACES.length; i++) {
-            if (FACES[i].equals(face)) {
-                return i + 1;
-            }
-        }
-        return -1;
-    }
-
-    // a) Returns true if hand contains exactly one pair
     public boolean isPair(Card[] hand) {
         int pairs = 0;
         for (int count : faceCounts(hand).values()) {
@@ -87,7 +70,6 @@ private final Suit[] SUITS = Suit.values();
         return pairs == 1;
     }
 
-    // b) Returns true if hand contains two distinct pairs
     public boolean isTwoPairs(Card[] hand) {
         int pairs = 0;
         for (int count : faceCounts(hand).values()) {
@@ -98,7 +80,6 @@ private final Suit[] SUITS = Suit.values();
         return pairs == 2;
     }
 
-    // c) Returns true if hand contains three of a kind
     public boolean isThreeOfAKind(Card[] hand) {
         for (int count : faceCounts(hand).values()) {
             if (count == 3) {
@@ -108,7 +89,6 @@ private final Suit[] SUITS = Suit.values();
         return false;
     }
 
-    // d) Returns true if hand contains four of a kind
     public boolean isFourOfAKind(Card[] hand) {
         for (int count : faceCounts(hand).values()) {
             if (count == 4) {
@@ -118,22 +98,22 @@ private final Suit[] SUITS = Suit.values();
         return false;
     }
 
-    // e) Returns true if all five cards share the same suit
     public boolean isFlush(Card[] hand) {
         Suit suit = hand[0].getSuit();
         for (Card card : hand) {
-            if (!card.getSuit().equals(suit)) {
+            if (card.getSuit() != suit) {
                 return false;
             }
         }
         return true;
     }
 
-    // f) Returns true if the five cards have consecutive face values
+    // Uses each Face's ordinal() value (its position in the enum,
+    // Ace = 0 .. King = 12) to check for five consecutive values.
     public boolean isStraight(Card[] hand) {
         int[] values = new int[hand.length];
         for (int i = 0; i < hand.length; i++) {
-           values[i] = hand[i].getFace().ordinal();
+            values[i] = hand[i].getFace().ordinal();
         }
         java.util.Arrays.sort(values);
 
@@ -142,13 +122,9 @@ private final Suit[] SUITS = Suit.values();
                 return false;
             }
         }
-        // Reject duplicate faces sorted adjacently (e.g., a pair) from
-        // being miscounted; a true straight has 5 distinct values already
-        // guaranteed by the consecutive check above.
         return true;
     }
 
-    // g) Returns true if hand is a full house (three of one face, two of another)
     public boolean isFullHouse(Card[] hand) {
         boolean hasThree = false;
         boolean hasTwo = false;
